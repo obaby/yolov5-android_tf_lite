@@ -35,6 +35,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.05f;
+    private String[] mTestImages = {"kite1.png", "kite2.jpg", "kite3.png", "kite4.png", "kite5.png"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
