@@ -16,6 +16,7 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -35,7 +36,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.05f;
-    private String[] mTestImages = {"kite1.png", "kite2.jpg", "kite3.png", "kite4.png", "kite5.png"};
+    private String[] mTestImages = {"kite1.jpg", "kite2.jpg", "kite3.jpg", "kite4.jpg", "kite5.jpg"};
+    private int mImageIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,24 @@ public class MainActivity extends AppCompatActivity {
         cameraButton = findViewById(R.id.cameraButton);
         detectButton = findViewById(R.id.detectButton);
         imageView = findViewById(R.id.imageView);
+        nextButton = findViewById(R.id.buttonNext);
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                mResultView.setVisibility(View.INVISIBLE);
+                mImageIndex = (mImageIndex + 1) % mTestImages.length;
+                nextButton.setText(String.format("IMAGE %d/%d", mImageIndex + 1, mTestImages.length));
+
+                sourceBitmap = Utils.getBitmapFromAsset(MainActivity.this,  mTestImages[mImageIndex]);//"kite5.jpg");
+
+                cropBitmap = Utils.processBitmap(sourceBitmap, TF_OD_API_INPUT_SIZE);
+
+                imageView.setImageBitmap(sourceBitmap);
+
+            }
+        });
+
 
         cameraButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, DetectorActivity.class)));
 
@@ -64,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             }).start();
 
         });
-        this.sourceBitmap = Utils.getBitmapFromAsset(MainActivity.this, "kite.jpg");
+        this.sourceBitmap = Utils.getBitmapFromAsset(MainActivity.this,  mTestImages[mImageIndex]);//"kite5.jpg");
 
         this.cropBitmap = Utils.processBitmap(sourceBitmap, TF_OD_API_INPUT_SIZE);
 
@@ -106,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap sourceBitmap;
     private Bitmap cropBitmap;
 
-    private Button cameraButton, detectButton;
+    private Button cameraButton, detectButton , nextButton;
     private ImageView imageView;
 
     private void initBox() {
